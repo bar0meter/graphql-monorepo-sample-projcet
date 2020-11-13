@@ -1,5 +1,8 @@
 node_modules/
 
-redisdata/
+mongo-data/
+redis-data/
+
+.env
 
 *.lock

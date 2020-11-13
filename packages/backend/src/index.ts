@@ -69,7 +69,7 @@ async function main() {
 
   server.applyMiddleware({ app, path: "/api/graphql" });
 
-  const PORT = process.env.PORT ?? "9000";
+  const PORT = process.env.BACKEND_PORT ?? "9000";
 
   app.listen(PORT, () => {
     console.log(`Koa server listening on port ${PORT}`);
