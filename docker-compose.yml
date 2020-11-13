@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+  reverse-proxy:
+    image: traefik:v2.2
+    command: --api.insecure=true --providers.docker
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  # postgres:
+  #   container_name: "hh-postgres"
+  #   image: "postgres:11"
+  #   ports:
+  #     - "127.0.0.1:5432:5432"
+  #   volumes:
+  #     - "pgdata:/var/lib/postgresql/data/"
+  #   environment:
+  #     POSTGRES_PASSWORD: hh
+
+  redis:
+    container_name: "gql-redis"
+    image: "redis"
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - "redisdata:/data"
+
+  backend:
+    image: node:12
+    command: yarn workspace @gql-learning/backend dev
+    ports:
+      - "127.0.0.1:9000:9000"
+    volumes:
+      - .:/srv/backend:rw
+    working_dir: /srv/backend
+    depends_on:
+      - redis
+      # - postgres
+    labels:
+      - "traefik.http.routers.backend.rule=Host(`hostyhosting.localhost`) && PathPrefix(`/api`)"
+
+volumes:
+  # pgdata:
+  redisdata:
