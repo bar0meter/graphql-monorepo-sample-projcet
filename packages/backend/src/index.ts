@@ -11,6 +11,7 @@ import { AuthChecker, buildSchema } from "type-graphql";
 import path from "path";
 import { Context } from "./types";
 import { ApolloServer } from "apollo-server-koa";
+import { logger } from "./logger";
 
 const app = new Koa();
 const router = new Router();
@@ -72,7 +73,7 @@ async function main() {
   const PORT = process.env.BACKEND_PORT ?? "9000";
 
   app.listen(PORT, () => {
-    console.log(`Koa server listening on port ${PORT}`);
+    logger.info(`Koa server listening on port ${PORT}`);
   });
 }
 
