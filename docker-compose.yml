@@ -20,10 +20,10 @@ services:
     env_file:
       - .env
     volumes:
-      - ./redisdata:/data
+      - ./data/redis:/data
 
   backend:
-    image: node:12
+    image: node:14-slim
     command: yarn workspace @gql-learning/backend dev
     env_file:
       - .env
@@ -43,10 +43,10 @@ services:
     image: mongo:4
     hostname: mongodb
     volumes:
-      - ./mongo-data/mongod.conf:/etc/mongod.conf
-      - ./mongo-data/db/initdb.d/:/docker-entrypoint-initdb.d/
-      - ./mongo-data/data/db/:/data/db/
-      - ./mongo-data/log/:/var/log/mongodb/
+      - ./data/mongo/mongod.conf:/etc/mongod.conf
+      - ./data/mongo/db/initdb.d/:/docker-entrypoint-initdb.d/
+      - ./data/mongo/data/db/:/data/db/
+      - ./data/mongo/log/:/var/log/mongodb/
     env_file:
       - .env
     environment:
@@ -70,5 +70,4 @@ services:
       ]
 
 volumes:
-  mongo-data:
-  redisdata:
+  data:
