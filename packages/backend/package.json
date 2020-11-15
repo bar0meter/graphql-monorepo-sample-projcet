@@ -4,11 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "@types/graphql-relay": "^0.6.0",
     "@types/ioredis": "^4.17.7",
     "@types/koa-redis": "^4.0.0",
     "@types/koa-session": "^5.10.3",
     "@types/koa__router": "^8.0.3",
     "@types/pino": "^6.3.3",
+    "@types/uuid": "^8.3.0",
     "ts-node-dev": "^1.0.0",
     "typescript": "^4.0.5"
   },
@@ -16,10 +18,13 @@
     "@gql-learning/utils": "1.0.0",
     "@koa/cors": "^3.1.0",
     "@koa/router": "^10.0.0",
+    "@mikro-orm/core": "^4.3.0",
+    "@mikro-orm/mongodb": "^4.3.0",
     "@types/pino": "^6.3.3",
     "apollo-server-koa": "^2.19.0",
     "class-validator": "^0.12.2",
     "graphql": "^15.4.0",
+    "graphql-relay": "^0.6.0",
     "ioredis": "^4.19.2",
     "koa": "^2.13.0",
     "koa-redis": "^4.0.1",
@@ -27,10 +32,18 @@
     "pino": "^6.7.0",
     "reflect-metadata": "^0.1.13",
     "remove": "^0.1.5",
-    "type-graphql": "^1.1.1"
+    "type-graphql": "^1.1.1",
+    "uuid": "^8.3.1"
   },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc"
+  },
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./src/mikro-orm.config.ts",
+      "./dist/mikro-orm.config.js"
+    ]
   }
 }

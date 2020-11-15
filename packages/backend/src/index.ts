@@ -12,6 +12,8 @@ import path from "path";
 import { Context } from "./types";
 import { ApolloServer } from "apollo-server-koa";
 import { logger } from "@gql-learning/utils";
+import { MikroORM } from "@mikro-orm/core";
+import { MongoDriver } from "@mikro-orm/mongodb";
 
 const app = new Koa();
 const router = new Router();
@@ -42,6 +44,8 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 async function main() {
+  const orm = await MikroORM.init<MongoDriver>();
+
   const customAuthChecker: AuthChecker<Context> = () => {
     return true;
   };
@@ -61,6 +65,7 @@ async function main() {
       }
 
       return {
+        orm,
         destroySession() {
           ctx.session = null;
         },
