@@ -11,7 +11,7 @@ import { AuthChecker, buildSchema } from "type-graphql";
 import path from "path";
 import { Context } from "./types";
 import { ApolloServer } from "apollo-server-koa";
-import { logger } from "./logger";
+import { logger } from "@gql-learning/utils";
 
 const app = new Koa();
 const router = new Router();
@@ -42,7 +42,7 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 async function main() {
-  const customAuthChecker: AuthChecker<Context> = ({ context }, roles) => {
+  const customAuthChecker: AuthChecker<Context> = () => {
     return true;
   };
 
