@@ -1,19 +1,21 @@
-import { BaseEntity, Entity, PrimaryKey, Property } from "@mikro-orm/core";
+import { BaseEntity, PrimaryKey, Property } from "@mikro-orm/core";
+import { ObjectId } from "@mikro-orm/mongodb";
 import { Field, ID, ObjectType } from "type-graphql";
-import { v4 } from "uuid";
 
-@Entity()
 @ObjectType({ isAbstract: true })
-export abstract class AbstractEntity<
-  T extends { id: string }
-> extends BaseEntity<T, "id"> {
-  @Field(() => ID)
-  @PrimaryKey({ type: "uuid" })
-  public id: string = v4();
+export abstract class AbstractEntity<T extends { _id: ObjectId }> extends BaseEntity<T, "_id"> {
+    @Field(() => ID)
+    @PrimaryKey()
+    _id: ObjectId;
 
-  @Property()
-  createdAt = new Date();
+    @Property()
+    createdAt = new Date();
 
-  @Property({ onUpdate: () => new Date() })
-  updatedAt = new Date();
+    @Property({ onUpdate: () => new Date() })
+    updatedAt = new Date();
+
+    constructor(body = {}) {
+        super();
+        this.assign(body);
+    }
 }

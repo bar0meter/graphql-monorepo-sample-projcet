@@ -1,14 +1,16 @@
-import { MikroORM } from "@mikro-orm/core";
-import { Context as KoaContext } from "koa";
+import { ObjectId } from "@mikro-orm/mongodb";
+import { Redis } from "ioredis";
+import { ParameterizedContext } from "koa";
+import { UserRepository } from "../repositories/UserRepository";
 
 export type Session = {
-  userID: string;
+    userID: ObjectId;
 };
-export type Cookies = KoaContext["cookies"];
 
-export type Context = {
-  orm: MikroORM;
-  destroySession(): void;
+export type Context = ParameterizedContext & {
+    session: Session;
+    redis: Redis;
+    userRepository: UserRepository;
 };
 
 export type Lazy<T> = T | Promise<T>;

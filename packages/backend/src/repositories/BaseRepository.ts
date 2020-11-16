@@ -1,16 +1,15 @@
 import { FindOptions, FilterQuery, QueryOrder, EntityRepository } from "@mikro-orm/core";
 import Relay from "graphql-relay";
 import { AbstractEntity } from "../entities/AbstractEntity";
-import { ConnectionArgs, Cursor, LimitOffsetArgs } from "../types/Pagination";
+import { ConnectionArgs, Cursor, LimitOffsetArgs, MAX_TAKE } from "../types/Pagination";
 
-export const MAX_TAKE = 50;
 export const DEFAULT_FIND_OPTIONS = {
     limit: MAX_TAKE,
     offset: 0,
 };
 
 type AbstractEntityQueryType = {
-    id?: any;
+    _id?: any;
     createdAt?: any;
     updatedAt?: any;
 };
@@ -34,7 +33,7 @@ export abstract class BaseRepository<T extends AbstractEntity<T>> extends Entity
                 orderBy: {
                     ...partialOptions?.orderBy,
                     createdAt: QueryOrder.DESC,
-                    id: QueryOrder.DESC,
+                    _id: QueryOrder.DESC,
                 },
             },
         );

@@ -1,9 +1,9 @@
 import { Min, Max } from "class-validator";
 import { ConnectionCursor } from "graphql-relay";
 import { ArgsType, Field, Int, ID, ObjectType, ClassType } from "type-graphql";
-import { MAX_TAKE } from "../repositories/BaseRepository";
 import Relay from "graphql-relay";
 
+export const MAX_TAKE = 50;
 export class Cursor {
     static serialize(id: Date) {
         return Buffer.from(String(id.getTime())).toString("base64");

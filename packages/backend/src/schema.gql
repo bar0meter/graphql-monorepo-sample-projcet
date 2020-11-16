@@ -3,6 +3,10 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type Mutation {
+  signUp(input: SignUpUserInput!): Result!
+}
+
 type PageInfo {
   endCursor: ID
   hasNextPage: Boolean!
@@ -12,13 +16,40 @@ type PageInfo {
 
 type Query {
   greeting: String!
-  users(limit: Int!, offset: Int = 0): [UserConnection!]!
+  users(limit: Int!, offset: Int = 0): UserConnection!
+}
+
+"""Provides a boolean to determine if the action was successful or not."""
+type Result {
+  ok: Boolean!
+}
+
+"""Normal SignIn User Input"""
+input SignInInput {
+  email: String!
+  password: String!
+}
+
+"""Normal SignUp input payload"""
+input SignUpUserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  _id: ID!
+  email: String
+  firstName: String
+  lastName: String
+  password: String
 }
 
 type User {
+  _id: ID!
   email: String!
   firstName: String!
-  id: ID!
   lastName: String
 }
 
