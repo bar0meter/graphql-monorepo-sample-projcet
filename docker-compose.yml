@@ -1,73 +1,78 @@
 version: "3.4"
 
 services:
-  reverse-proxy:
-    image: traefik:v2.2
-    command: --api.insecure=true --providers.docker
-    ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
-    volumes:
-      # So that Traefik can listen to the Docker events
-      - /var/run/docker.sock:/var/run/docker.sock
+    reverse-proxy:
+        image: traefik:v2.2
+        command: --api.insecure=true --providers.docker
+        ports:
+            - "80:80"
+            - "443:443"
+            - "8080:8080"
+        volumes:
+            # So that Traefik can listen to the Docker events
+            - /var/run/docker.sock:/var/run/docker.sock
+        networks:
+            - backend
 
-  redis:
-    container_name: "gql-redis"
-    image: "redis"
-    ports:
-      - "127.0.0.1:${REDIS_PORT}:${REDIS_PORT}"
-    env_file:
-      - .env
-    volumes:
-      - ./data/redis:/data
+    redis:
+        container_name: "gql-redis"
+        image: "redis"
+        ports:
+            - "127.0.0.1:${REDIS_PORT}:${REDIS_PORT}"
+        env_file:
+            - .env
+        volumes:
+            - ./data/redis:/data
+        networks:
+            - backend
 
-  backend:
-    image: node:14-slim
-    command: yarn workspace @gql-learning/backend dev
-    env_file:
-      - .env
-    ports:
-      - "127.0.0.1:${BACKEND_PORT}:${BACKEND_PORT}"
-    volumes:
-      - .:/srv/backend:rw
-    working_dir: /srv/backend
-    depends_on:
-      - redis
-      - mongodb
-    labels:
-      - "traefik.http.routers.backend.rule=Host(`gql-learning.localhost`) && PathPrefix(`/api`)"
+    backend:
+        image: node:14-slim
+        command: yarn workspace @gql-learning/backend dev
+        env_file:
+            - .env
+        ports:
+            - "127.0.0.1:${BACKEND_PORT}:${BACKEND_PORT}"
+        volumes:
+            - .:/srv/backend:rw
+        working_dir: /srv/backend
+        depends_on:
+            - redis
+            - mongodb
+        labels:
+            - "traefik.http.routers.backend.rule=Host(`gql-learning.localhost`) && PathPrefix(`/api`)"
+        networks:
+            - backend
 
-  mongodb:
-    container_name: gql-mongodb
-    image: mongo:4
-    hostname: mongodb
-    volumes:
-      - ./data/mongo/mongod.conf:/etc/mongod.conf
-      - ./data/mongo/db/initdb.d/:/docker-entrypoint-initdb.d/
-      - ./data/mongo/data/db/:/data/db/
-      - ./data/mongo/log/:/var/log/mongodb/
-    env_file:
-      - .env
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
-      - MONGO_REPLICA_SET_NAME=${MONGO_REPLICA_SET_NAME}
-    ports:
-      - "27017:27017"
-    healthcheck:
-      test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo -u $${MONGO_INITDB_ROOT_USERNAME} -p $${MONGO_INITDB_ROOT_PASSWORD} --quiet) -eq 1
-      interval: 60s
-      start_period: 30s
-    command:
-      [
-        "-f",
-        "/etc/mongod.conf",
-        "--replSet",
-        "${MONGO_REPLICA_SET_NAME}",
-        "--bind_ip_all",
-      ]
+    mongodb:
+        container_name: gql-mongodb
+        image: mongo:4
+        hostname: mongodb
+        volumes:
+            - ./data/mongo/mongod.conf:/etc/mongod.conf
+            - ./data/mongo/db/initdb.d/:/docker-entrypoint-initdb.d/
+            - ./data/mongo/data/db/:/data/db/
+            - ./data/mongo/log/:/var/log/mongodb/
+        env_file:
+            - .env
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+            - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+            - MONGO_REPLICA_SET_NAME=${MONGO_REPLICA_SET_NAME}
+        ports:
+            - "27017:27017"
+        healthcheck:
+            test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo -u $${MONGO_INITDB_ROOT_USERNAME} -p $${MONGO_INITDB_ROOT_PASSWORD} --quiet) -eq 1
+            interval: 60s
+            start_period: 30s
+        command:
+            ["-f", "/etc/mongod.conf", "--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all"]
+        networks:
+            - backend
 
 volumes:
-  data:
+    data:
+
+networks:
+    backend:

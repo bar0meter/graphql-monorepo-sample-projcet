@@ -3,6 +3,32 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type PageInfo {
+  endCursor: ID
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: ID
+}
+
 type Query {
   greeting: String!
+  users(limit: Int!, offset: Int = 0): [UserConnection!]!
+}
+
+type User {
+  email: String!
+  firstName: String!
+  id: ID!
+  lastName: String
+}
+
+type UserConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+}
+
+type UserEdge {
+  """Used in `before` and `after` args"""
+  cursor: ID!
+  node: User!
 }
