@@ -1,9 +1,17 @@
+# Node modules folder
 node_modules/
 
+# Development data directory
 data/
 
+# Enviornment Files
 .env
 
+# yarn.lock and package-lock.json files
 *.lock
 
 packages/**/dist/
+
+# IDE/Code Editor settings
+.vscode/
+.idea/
