@@ -8,5 +8,11 @@
     "packages/*"
   ],
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "prettier": "^2.1.2"
+  },
+  "scripts": {
+    "prettify-check": "./node_modules/.bin/prettier --check \"packages/**/src/**/*.ts\"",
+    "prettify": "./node_modules/.bin/prettier --write \"packages/**/src/**/*.ts\""
+  }
 }
