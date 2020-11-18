@@ -19,8 +19,8 @@ export class User extends AbstractEntity<User> {
     @Unique()
     public email: string;
 
-    @Property()
-    public password: string;
+    @Property({ type: 'bytea', nullable: true })
+    public password: Buffer;
 
     [EntityRepositoryType]?: UserRepository;
 }

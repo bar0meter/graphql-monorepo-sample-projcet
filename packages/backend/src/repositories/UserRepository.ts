@@ -1,6 +1,13 @@
 import { User } from "../entities/UserEntity";
 import { SignUpUserInput, SignInInput } from "../types/inputs/UserInput";
 import { BaseRepository } from "./BaseRepository";
+import SecurePassword from "secure-password";
+import { wrap } from "@mikro-orm/core";
+
+const securePassword = new SecurePassword({
+    memlimit: SecurePassword.MEMLIMIT_DEFAULT,
+    opslimit: SecurePassword.OPSLIMIT_DEFAULT,
+});
 
 export class UserRepository extends BaseRepository<User> {
     async signUp(input: SignUpUserInput) {
@@ -16,18 +23,28 @@ export class UserRepository extends BaseRepository<User> {
     }
 
     async hashPassword(password: string) {
-        return await password;
+        return await securePassword.hash(Buffer.from(password));
     }
 
-    async verifyHashedPassword(password: string, hashedPassword: string): Promise<Boolean> {
-        return false;
+    async verifyHashedPassword(password: string, hashedPassword: Buffer) {
+        return await securePassword.verify(Buffer.from(password), hashedPassword);
     }
 
     async signIn({ email, password }: SignInInput) {
         const user = await this.findOneOrFail({ email }, { fields: ["_id", "password", "email"] });
 
-        if (!this.verifyHashedPassword(password, user.password)) {
-            // throw invalid credentials error here
+        const verifyPassowrdResult = await this.verifyHashedPassword(password, user.password);
+
+        if (![SecurePassword.VALID_NEEDS_REHASH, SecurePassword.VALID].includes(verifyPassowrdResult)) {
+
+        }
+
+        if (verifyPassowrdResult === SecurePassword.VALID_NEEDS_REHASH) {
+            const hashedPassword = await this.hashPassword(password)
+            wrap(user).assign({
+                password: hashedPassword
+            })
+            this.persistAndFlush(user);
         }
 
         return user;

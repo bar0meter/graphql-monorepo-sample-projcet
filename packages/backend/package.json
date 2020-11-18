@@ -10,6 +10,7 @@
     "@types/koa-session": "^5.10.3",
     "@types/koa__router": "^8.0.3",
     "@types/pino": "^6.3.3",
+    "@types/secure-password": "^3.1.0",
     "@types/uuid": "^8.3.0",
     "ts-node-dev": "^1.0.0",
     "typescript": "^4.0.5"
@@ -32,6 +33,7 @@
     "pino": "^6.7.0",
     "reflect-metadata": "^0.1.13",
     "remove": "^0.1.5",
+    "secure-password": "^4.0.0",
     "type-graphql": "^1.1.1",
     "uuid": "^8.3.1"
   },
