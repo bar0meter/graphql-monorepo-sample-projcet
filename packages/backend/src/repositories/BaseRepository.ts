@@ -47,7 +47,7 @@ export abstract class BaseRepository<T extends AbstractEntity<T>> extends Entity
                 startCursor: null,
                 endCursor: null,
             },
-            edges: records.slice(0, args.limit).map((node) => ({
+            edges: records.slice(0, args.limit).map(node => ({
                 node,
                 cursor: Cursor.serialize(node.createdAt),
             })),
@@ -101,7 +101,7 @@ export abstract class BaseRepository<T extends AbstractEntity<T>> extends Entity
                       )
                     : null,
             },
-            edges: records.slice(0, numberOfRecords).map((node) => ({
+            edges: records.slice(0, numberOfRecords).map(node => ({
                 node,
                 cursor: Cursor.serialize(node.createdAt),
             })),

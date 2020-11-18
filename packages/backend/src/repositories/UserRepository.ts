@@ -9,6 +9,7 @@ const securePassword = new SecurePassword({
     opslimit: SecurePassword.OPSLIMIT_DEFAULT,
 });
 
+// Should we use cached User object for validating user ? (hmmmm !!!)
 export class UserRepository extends BaseRepository<User> {
     async signUp(input: SignUpUserInput) {
         const hashedPassword = await this.hashPassword(input.password);
@@ -35,15 +36,20 @@ export class UserRepository extends BaseRepository<User> {
 
         const verifyPassowrdResult = await this.verifyHashedPassword(password, user.password);
 
-        if (![SecurePassword.VALID_NEEDS_REHASH, SecurePassword.VALID].includes(verifyPassowrdResult)) {
-
+        if (
+            ![SecurePassword.VALID_NEEDS_REHASH, SecurePassword.VALID].includes(
+                verifyPassowrdResult,
+            )
+        ) {
+            // Invalid credentials
+            throw new Error("Invalid Credentials");
         }
 
         if (verifyPassowrdResult === SecurePassword.VALID_NEEDS_REHASH) {
-            const hashedPassword = await this.hashPassword(password)
+            const hashedPassword = await this.hashPassword(password);
             wrap(user).assign({
-                password: hashedPassword
-            })
+                password: hashedPassword,
+            });
             this.persistAndFlush(user);
         }
 

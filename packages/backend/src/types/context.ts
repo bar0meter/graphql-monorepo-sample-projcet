@@ -3,6 +3,8 @@ import { Redis } from "ioredis";
 import { ParameterizedContext } from "koa";
 import { UserRepository } from "../repositories/UserRepository";
 
+// TODO: Here add AuthType (Signed In, Password Reset, etc)
+// Depending on the AuthType we can give him access to certain API
 export type Session = {
     userID: ObjectId;
 };
