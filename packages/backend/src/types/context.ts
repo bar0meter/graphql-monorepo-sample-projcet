@@ -10,6 +10,7 @@ import { UserRepository } from "../repositories/UserRepository";
 export type Session = {
     userID: ObjectId;
     authType: AuthType;
+    resetToken?: string;
 };
 
 export type Context = ParameterizedContext & {

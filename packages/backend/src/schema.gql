@@ -4,8 +4,9 @@
 # -----------------------------------------------
 
 type Mutation {
-  changePassword(password: String!, resetToken: String!): Result!
+  changePassword(password: String!): Result!
   createAndSendResetPasswordMail(email: String!): Result!
+  signIn(email: String!, password: String!): Result!
   signUp(input: SignUpUserInput!): Result!
   validateResetPasswordLink(email: String!, resetToken: String!): Result!
 }
@@ -25,12 +26,6 @@ type Query {
 """Provides a boolean to determine if the action was successful or not."""
 type Result {
   ok: Boolean!
-}
-
-"""Normal SignIn User Input"""
-input SignInInput {
-  email: String!
-  password: String!
 }
 
 """Normal SignUp input payload"""

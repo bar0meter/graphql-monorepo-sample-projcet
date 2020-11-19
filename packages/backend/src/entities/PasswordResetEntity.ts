@@ -5,15 +5,16 @@ import { User } from "./UserEntity";
 
 @Entity({ customRepository: () => PasswordResetRepository })
 export class PasswordReset extends AbstractEntity<PasswordReset> {
-    @OneToOne(
-        () => User,
-        user => user.passwordReset,
-        { owner: true, orphanRemoval: false },
-    )
+    @OneToOne(() => User)
     user: User;
 
     @Property({ type: "uuid" })
     resetToken: string;
 
     [EntityRepositoryType]?: PasswordResetRepository;
+
+    constructor(user: User) {
+        super();
+        this.user = user;
+    }
 }

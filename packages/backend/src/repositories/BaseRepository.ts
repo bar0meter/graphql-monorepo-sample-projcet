@@ -47,7 +47,7 @@ export abstract class BaseRepository<T extends AbstractEntity<T>> extends Entity
                 startCursor: null,
                 endCursor: null,
             },
-            edges: records.slice(0, args.limit).map(node => ({
+            edges: records.slice(0, args.limit).map((node) => ({
                 node,
                 cursor: Cursor.serialize(node.createdAt),
             })),
@@ -73,10 +73,10 @@ export abstract class BaseRepository<T extends AbstractEntity<T>> extends Entity
 
         if (args.after) {
             const after = Cursor.parse(args.after);
-            newWhere.createdAt = { $gte: after };
+            newWhere.createdAt = { $gt: after };
         } else if (args.before) {
             const before = Cursor.parse(args.before);
-            newWhere.createdAt = { $lte: before };
+            newWhere.createdAt = { $lt: before };
         }
 
         const records = await this.find(newWhere, {
@@ -101,7 +101,7 @@ export abstract class BaseRepository<T extends AbstractEntity<T>> extends Entity
                       )
                     : null,
             },
-            edges: records.slice(0, numberOfRecords).map(node => ({
+            edges: records.slice(0, numberOfRecords).map((node) => ({
                 node,
                 cursor: Cursor.serialize(node.createdAt),
             })),

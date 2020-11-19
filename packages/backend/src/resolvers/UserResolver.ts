@@ -1,7 +1,7 @@
 import { Arg, Args, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { AuthType, User } from "../entities/UserEntity";
 import { Context, Session } from "../types";
-import { SignInInput, SignUpUserInput } from "../types/inputs/UserInput";
+import { SignUpUserInput } from "../types/inputs/UserInput";
 import Result from "../types/output/Result";
 import { createConnection, LimitOffsetArgs } from "../types/Pagination";
 
@@ -27,29 +27,41 @@ export class UserResolver {
     }
 
     @Mutation(() => Result)
+    async signIn(
+        @Arg("email") email: string,
+        @Arg("password") password: string,
+        @Ctx() { ctx, userRepository }: Context,
+    ) {
+        const user = await userRepository.signIn(email, password);
+        if (user) {
+            ctx.session = {
+                userID: user._id,
+                authType: AuthType.SESSION,
+            } as Session;
+        }
+
+        return new Result(!!user);
+    }
+
+    @Mutation(() => Result)
     async changePassword(
         @Arg("password") password: string,
-        @Arg("resetToken") resetToken: string,
-        @Ctx() { ctx, userRepository, passwordResetRepository }: Context,
+        @Ctx() { ctx, userRepository }: Context,
     ) {
         const session: Session = ctx.session;
-        if (!session || !session.userID || session.authType !== AuthType.RESET_PASSWORD) {
+        if (
+            !session ||
+            !session.userID ||
+            session.authType !== AuthType.RESET_PASSWORD ||
+            !session.resetToken
+        ) {
             return new Result(false);
         }
 
-        const sessionUser = await userRepository.findOne({ _id: session.userID });
-        // there wont be any such case
-        if (!sessionUser) {
-            return new Result(false);
-        }
-
-        const success = await passwordResetRepository.resetPassword(password, resetToken);
+        const success = await userRepository.changePassword(password, session.resetToken);
         if (success) {
-            // sign in user
-            ctx.session = {
-                userID: sessionUser._id,
-                authType: AuthType.SESSION,
-            };
+            // sign in reset password user
+            ctx.session.authType = AuthType.SESSION;
         }
 
         return new Result(success);

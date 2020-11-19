@@ -14,15 +14,19 @@ export class PasswordResetRepository extends BaseRepository<PasswordReset> {
             return false; // no user found, dont throw any error, just don't send any email
         }
 
-        const previousRecord = this.findOne({ user });
+        const previousRecord = await this.findOne({ user });
         // Here can add check for number of reset password email requested in last 5-10 mins or 1 hr, etc
         // Dont want someone to spam the emails
-        this.remove(previousRecord);
+        if (previousRecord) {
+            this.remove(previousRecord);
+        }
 
         const resetToken = v4();
 
-        const passwordReset = this.create({ user, resetToken });
-        await this.persistAndFlush(passwordReset);
+        const passwordReset = new PasswordReset(user);
+        wrap(passwordReset).assign({ resetToken }, { em: this.em });
+
+        await this.em.persistAndFlush(passwordReset);
 
         // Send email here
 
@@ -42,22 +46,5 @@ export class PasswordResetRepository extends BaseRepository<PasswordReset> {
         // Here validate expiry time here
 
         return user;
-    }
-
-    async resetPassword(password: string, resetToken: string) {
-        const reset = await this.findOne({ resetToken });
-        if (!reset) {
-            throw new Error("Invalid Token");
-        }
-
-        const user = reset.user;
-        const userRepo = this.em.getRepository(User);
-        const hashedPassword = await userRepo.hashPassword(password);
-
-        wrap(user).assign({ password: hashedPassword });
-        userRepo.persist(user);
-        await this.removeAndFlush(reset);
-
-        return true;
     }
 }

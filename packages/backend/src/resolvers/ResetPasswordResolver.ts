@@ -18,6 +18,7 @@ export class ResetPasswordResolver {
             ctx.session = {
                 userID: user._id,
                 authType: AuthType.RESET_PASSWORD,
+                resetToken,
             } as Session;
         }
 
