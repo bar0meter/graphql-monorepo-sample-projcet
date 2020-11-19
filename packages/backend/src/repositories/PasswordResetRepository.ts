@@ -6,7 +6,7 @@ import { BaseRepository } from "./BaseRepository";
 
 // TODO: Implement using transactions if implicit transactions are off
 export class PasswordResetRepository extends BaseRepository<PasswordReset> {
-    async createForEmail(email: string) {
+    async createAndSetTokenForEmail(email: string) {
         const userRepo = this.em.getRepository(User);
 
         const user = await userRepo.findOne({ email });
