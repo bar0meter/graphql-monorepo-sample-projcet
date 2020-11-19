@@ -36,12 +36,12 @@ export class PasswordResetRepository extends BaseRepository<PasswordReset> {
         const reset = await this.findOne({ resetToken, user });
 
         if (!reset) {
-            return false;
+            return null;
         }
 
         // Here validate expiry time here
 
-        return true;
+        return user;
     }
 
     async resetPassword(password: string, resetToken: string) {

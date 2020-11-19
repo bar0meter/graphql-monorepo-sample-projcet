@@ -28,3 +28,8 @@ export class User extends AbstractEntity<User> {
 
     [EntityRepositoryType]?: UserRepository;
 }
+
+export enum AuthType {
+    SESSION = "session",
+    RESET_PASSWORD = "reset_password",
+}

@@ -4,7 +4,10 @@
 # -----------------------------------------------
 
 type Mutation {
+  changePassword(password: String!, resetToken: String!): Result!
+  createAndSendResetPasswordMail(email: String!): Result!
   signUp(input: SignUpUserInput!): Result!
+  validateResetPasswordLink(email: String!, resetToken: String!): Result!
 }
 
 type PageInfo {

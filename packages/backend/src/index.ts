@@ -15,6 +15,7 @@ import { logger } from "@gql-learning/utils";
 import { MikroORM } from "@mikro-orm/core";
 import { MongoDriver } from "@mikro-orm/mongodb";
 import { User } from "./entities/UserEntity";
+import { PasswordReset } from "./entities/PasswordResetEntity";
 
 const app = new Koa();
 const router = new Router();
@@ -68,6 +69,7 @@ async function main() {
                 ...context,
                 redis,
                 userRepository: em.getRepository(User),
+                passwordResetRepository: em.getRepository(PasswordReset),
             };
         },
     });
@@ -81,4 +83,4 @@ async function main() {
     });
 }
 
-main().catch(err => console.error(err));
+main().catch((err) => console.error(err));
