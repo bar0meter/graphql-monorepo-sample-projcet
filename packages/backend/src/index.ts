@@ -5,7 +5,7 @@ import bodyParser from "koa-bodyparser";
 import Router from "@koa/router";
 import session from "koa-session";
 import redisStore from "koa-redis";
-import { SESSION_NAME } from "./constants";
+import { PORT, SESSION_NAME } from "./constants";
 import redis from "./redis";
 import { AuthChecker, buildSchema } from "type-graphql";
 import path from "path";
@@ -75,8 +75,6 @@ async function main() {
     });
 
     server.applyMiddleware({ app, path: "/api/graphql" });
-
-    const PORT = process.env.BACKEND_PORT ?? "9000";
 
     app.listen(PORT, () => {
         logger.info(`Koa server listening on port ${PORT}`);

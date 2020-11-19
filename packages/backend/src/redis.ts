@@ -1,4 +1,4 @@
 import Redis from "ioredis";
+import { REDIS_URL } from "./constants";
 
-const REDIS_URL = process.env.REDIS_URL ?? "";
 export default new Redis(REDIS_URL);
