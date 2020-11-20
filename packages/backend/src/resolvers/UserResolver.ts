@@ -1,5 +1,5 @@
-import { Arg, Args, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { AuthType, User } from "../entities/UserEntity";
+import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { AuthType, User, UserRole } from "../entities/UserEntity";
 import { Context, Session } from "../types";
 import { SignUpUserInput } from "../types/inputs/UserInput";
 import Result from "../types/output/Result";
@@ -9,18 +9,21 @@ const [UserConnection] = createConnection(User);
 
 @Resolver(() => User)
 export class UserResolver {
+    @Authorized(UserRole.ADMIN)
     @Query(() => UserConnection)
     async users(@Args() args: LimitOffsetArgs, @Ctx() { userRepository }: Context) {
         return await userRepository.findAndPaginate({}, args);
     }
 
     @Mutation(() => Result)
-    async signUp(@Arg("input") input: SignUpUserInput, @Ctx() { ctx, userRepository }: Context) {
+    async signUp(@Arg("input") input: SignUpUserInput, @Ctx() context: Context) {
+        const { ctx, userRepository } = context;
         const user = await userRepository.signUp(input);
 
         ctx.session = {
             userID: user._id,
             authType: AuthType.SESSION,
+            role: user.role,
         } as Session;
 
         return new Result();
@@ -30,13 +33,15 @@ export class UserResolver {
     async signIn(
         @Arg("email") email: string,
         @Arg("password") password: string,
-        @Ctx() { ctx, userRepository }: Context,
+        @Ctx() context: Context,
     ) {
+        const { ctx, userRepository } = context;
         const user = await userRepository.signIn(email, password);
         if (user) {
             ctx.session = {
                 userID: user._id,
                 authType: AuthType.SESSION,
+                role: user.role,
             } as Session;
         }
 
@@ -65,5 +70,11 @@ export class UserResolver {
         }
 
         return new Result(success);
+    }
+
+    @Mutation(() => Result)
+    async logout(@Ctx() { ctx }: Context) {
+        ctx.session = null;
+        return new Result();
     }
 }

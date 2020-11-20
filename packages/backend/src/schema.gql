@@ -6,6 +6,7 @@
 type Mutation {
   changePassword(password: String!): Result!
   createAndSendResetPasswordMail(email: String!): Result!
+  logout: Result!
   signIn(email: String!, password: String!): Result!
   signUp(input: SignUpUserInput!): Result!
   validateResetPasswordLink(email: String!, resetToken: String!): Result!

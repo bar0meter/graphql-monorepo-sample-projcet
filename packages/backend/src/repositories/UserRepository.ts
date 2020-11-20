@@ -1,9 +1,11 @@
-import { User } from "../entities/UserEntity";
+import { User, UserRole } from "../entities/UserEntity";
 import { SignUpUserInput } from "../types/inputs/UserInput";
 import { BaseRepository } from "./BaseRepository";
 import SecurePassword from "secure-password";
 import { wrap } from "@mikro-orm/core";
 import { PasswordReset } from "../entities/PasswordResetEntity";
+
+const ADMIN_USERS = ["frost@gmail.com"];
 
 const securePassword = new SecurePassword({
     memlimit: SecurePassword.MEMLIMIT_DEFAULT,
@@ -16,7 +18,10 @@ export class UserRepository extends BaseRepository<User> {
         const hashedPassword = await this.hashPassword(input.password);
 
         // save user
-        const user = this.create({ ...input, password: hashedPassword });
+        const role: UserRole = ADMIN_USERS.includes(input.email ?? "")
+            ? UserRole.ADMIN
+            : UserRole.BASIC;
+        const user = this.create({ ...input, password: hashedPassword, role });
 
         await this.em.persist(user).flush();
 

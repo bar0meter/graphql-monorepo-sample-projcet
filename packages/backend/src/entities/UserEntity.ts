@@ -1,7 +1,23 @@
-import { Entity, EntityRepositoryType, Property, Unique } from "@mikro-orm/core";
-import { Field, ObjectType } from "type-graphql";
+import { Entity, EntityRepositoryType, Enum, Property, Unique } from "@mikro-orm/core";
+import { Field, ObjectType, registerEnumType } from "type-graphql";
 import { UserRepository } from "../repositories/UserRepository";
 import { AbstractEntity } from "./AbstractEntity";
+
+export enum AuthType {
+    SESSION = "session",
+    RESET_PASSWORD = "reset_password",
+}
+
+export enum UserRole {
+    OWNER = 0,
+    ADMIN = 10,
+    BASIC = 50,
+}
+
+registerEnumType(UserRole, {
+    name: "Access",
+    description: "User Access",
+});
 
 @Entity({ customRepository: () => UserRepository })
 @ObjectType()
@@ -19,16 +35,11 @@ export class User extends AbstractEntity<User> {
     @Unique()
     email: string;
 
-    @Property({ type: "bytea", nullable: true })
+    @Property({ nullable: true })
     password: Buffer;
 
-    // @OneToOne(() => PasswordReset)
-    // passwordReset: PasswordReset;
+    @Enum({ default: UserRole.BASIC })
+    role: UserRole;
 
     [EntityRepositoryType]?: UserRepository;
-}
-
-export enum AuthType {
-    SESSION = "session",
-    RESET_PASSWORD = "reset_password",
 }

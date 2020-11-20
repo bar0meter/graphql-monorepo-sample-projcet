@@ -1,3 +1,4 @@
+import { logger } from "@gql-learning/utils";
 import { FindOptions, FilterQuery, QueryOrder, EntityRepository } from "@mikro-orm/core";
 import Relay from "graphql-relay";
 import { AbstractEntity } from "../entities/AbstractEntity";
@@ -47,7 +48,7 @@ export abstract class BaseRepository<T extends AbstractEntity<T>> extends Entity
                 startCursor: null,
                 endCursor: null,
             },
-            edges: records.slice(0, args.limit).map((node) => ({
+            edges: records.slice(0, args.limit).map(node => ({
                 node,
                 cursor: Cursor.serialize(node.createdAt),
             })),
@@ -101,7 +102,7 @@ export abstract class BaseRepository<T extends AbstractEntity<T>> extends Entity
                       )
                     : null,
             },
-            edges: records.slice(0, numberOfRecords).map((node) => ({
+            edges: records.slice(0, numberOfRecords).map(node => ({
                 node,
                 cursor: Cursor.serialize(node.createdAt),
             })),

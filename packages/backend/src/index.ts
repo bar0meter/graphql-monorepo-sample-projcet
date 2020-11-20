@@ -7,7 +7,7 @@ import session from "koa-session";
 import redisStore from "koa-redis";
 import { PORT, SESSION_NAME } from "./constants";
 import redis from "./redis";
-import { AuthChecker, buildSchema } from "type-graphql";
+import { buildSchema } from "type-graphql";
 import path from "path";
 import { Context } from "./types";
 import { ApolloServer } from "apollo-server-koa";
@@ -16,6 +16,7 @@ import { MikroORM } from "@mikro-orm/core";
 import { MongoDriver } from "@mikro-orm/mongodb";
 import { User } from "./entities/UserEntity";
 import { PasswordReset } from "./entities/PasswordResetEntity";
+import { CustomAuthChecker } from "./utils/AuthChecker";
 
 const app = new Koa();
 const router = new Router();
@@ -51,14 +52,10 @@ async function main() {
     const orm = await MikroORM.init<MongoDriver>();
     const em = orm.em;
 
-    const customAuthChecker: AuthChecker<Context> = () => {
-        return true;
-    };
-
     const schema = await buildSchema({
         resolvers: [__dirname + "/resolvers/**/*.{ts,js}"],
         emitSchemaFile: path.resolve(__dirname, "schema.gql"),
-        authChecker: customAuthChecker,
+        authChecker: CustomAuthChecker,
     });
 
     const server = new ApolloServer({
@@ -81,4 +78,4 @@ async function main() {
     });
 }
 
-main().catch((err) => console.error(err));
+main().catch(err => console.error(err));
