@@ -1,4 +1,4 @@
-import { Entity, EntityRepositoryType, Enum, Property, Unique } from "@mikro-orm/core";
+import { Entity, EntityRepositoryType, Enum, Index, Property, Unique } from "@mikro-orm/core";
 import { Field, ObjectType, registerEnumType } from "type-graphql";
 import { UserRepository } from "../repositories/UserRepository";
 import { AbstractEntity } from "./AbstractEntity";
@@ -33,7 +33,7 @@ export class User extends AbstractEntity<User> {
     @Property()
     @Field()
     @Unique()
-    email: string;
+    email!: string;
 
     @Property({ nullable: true })
     password: Buffer;

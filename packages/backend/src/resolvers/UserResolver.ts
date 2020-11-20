@@ -1,9 +1,13 @@
 import { Arg, Args, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { AuthType, User, UserRole } from "../entities/UserEntity";
-import { Context, Session } from "../types";
-import { SignUpUserInput } from "../types/inputs/UserInput";
-import Result from "../types/output/Result";
-import { createConnection, LimitOffsetArgs } from "../types/Pagination";
+import {
+    Context,
+    Session,
+    SignUpUserInput,
+    createConnection,
+    LimitOffsetArgs,
+    Result,
+} from "../types";
 
 const [UserConnection] = createConnection(User);
 
@@ -73,7 +77,7 @@ export class UserResolver {
     }
 
     @Mutation(() => Result)
-    async logout(@Ctx() { ctx }: Context) {
+    logout(@Ctx() { ctx }: Context) {
         ctx.session = null;
         return new Result();
     }

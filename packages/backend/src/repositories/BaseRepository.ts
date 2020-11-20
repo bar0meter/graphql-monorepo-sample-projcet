@@ -1,8 +1,7 @@
-import { logger } from "@gql-learning/utils";
 import { FindOptions, FilterQuery, QueryOrder, EntityRepository } from "@mikro-orm/core";
 import Relay from "graphql-relay";
 import { AbstractEntity } from "../entities/AbstractEntity";
-import { ConnectionArgs, Cursor, LimitOffsetArgs, MAX_TAKE } from "../types/Pagination";
+import { ConnectionArgs, Cursor, LimitOffsetArgs, MAX_TAKE } from "../types";
 
 export const DEFAULT_FIND_OPTIONS = {
     limit: MAX_TAKE,

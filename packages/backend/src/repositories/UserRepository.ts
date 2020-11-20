@@ -1,5 +1,5 @@
 import { User, UserRole } from "../entities/UserEntity";
-import { SignUpUserInput } from "../types/inputs/UserInput";
+import { SignUpUserInput } from "../types";
 import { BaseRepository } from "./BaseRepository";
 import SecurePassword from "secure-password";
 import { wrap } from "@mikro-orm/core";

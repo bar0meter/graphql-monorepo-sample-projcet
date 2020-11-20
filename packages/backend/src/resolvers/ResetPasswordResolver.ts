@@ -1,8 +1,7 @@
 import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
 import { PasswordReset } from "../entities/PasswordResetEntity";
 import { AuthType } from "../entities/UserEntity";
-import { Context, Session } from "../types";
-import Result from "../types/output/Result";
+import { Context, Result, Session } from "../types";
 
 @Resolver(() => PasswordReset)
 export class ResetPasswordResolver {

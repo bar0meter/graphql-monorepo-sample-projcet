@@ -52,6 +52,8 @@ async function main() {
     const orm = await MikroORM.init<MongoDriver>();
     const em = orm.em;
 
+    await em.getDriver().ensureIndexes();
+
     const schema = await buildSchema({
         resolvers: [__dirname + "/resolvers/**/*.{ts,js}"],
         emitSchemaFile: path.resolve(__dirname, "schema.gql"),

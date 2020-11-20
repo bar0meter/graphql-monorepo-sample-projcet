@@ -53,6 +53,8 @@ services:
             - ./data/mongo/db/initdb.d/:/docker-entrypoint-initdb.d/
             - ./data/mongo/data/db/:/data/db/
             - ./data/mongo/log/:/var/log/mongodb/
+        logging:
+            driver: none
         env_file:
             - .env
         environment:
